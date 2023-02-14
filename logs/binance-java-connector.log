@@ -1,0 +1,2 @@
+2023-02-14 15:49:28.207[1676378968207] | INFO  | main       | c.b.c.client.utils.RequestHandler    - GET https://api.binance.com/api/v3/time
+2023-02-14 16:00:01.090[1676379601090] | INFO  | main       | c.b.c.client.utils.RequestHandler    - GET https://api.binance.com/api/v3/klines?symbol=BNBUSDT&interval=1m
