@@ -2,18 +2,40 @@ package bin.trade.binanceapi;
 
 import com.binance.connector.client.SpotClient;
 import com.binance.connector.client.impl.SpotClientImpl;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
-public class BinanceConnector {
+public class BinanceConnector implements KlinesArray {
+    SpotClient spotClient = new SpotClientImpl();
 
-    public static void main(String[] args) {
+    @Override
+    public ArrayList<Double> getKlines(String coinsPair, String time) {
         LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
-        parameters.put("symbol", "BNBUSDT");
-        parameters.put("interval", "1m");
+        parameters.put("symbol", coinsPair);
+        parameters.put("interval", time);
+        String klinesData = spotClient.createMarket().klines(parameters);
+        parseJSON(klinesData);
+        ArrayList<Double> klinesArray = new ArrayList<>();
+        return klinesArray;
+    }
+    private void parseJSON(String klines) {
+        JSONParser jsonParser = new JSONParser();
+        ArrayList<Double> openPrice = new ArrayList<>();
+        try {
 
-        SpotClient spotClient = new SpotClientImpl();
-        System.out.println(spotClient.createMarket().klines(parameters));
+            JSONObject klinesData = (JSONObject) jsonParser.parse(klines);
+            System.out.println(klinesData);
+            //var stringData = klinesData.getJSONArray("");
+            //openPrice.add(stringData.getDouble(1));
+            //System.out.println(openPrice);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
 
