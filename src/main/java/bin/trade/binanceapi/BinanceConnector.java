@@ -2,8 +2,8 @@ package bin.trade.binanceapi;
 
 import com.binance.connector.client.SpotClient;
 import com.binance.connector.client.impl.SpotClientImpl;
-import org.json.JSONArray;
-import org.json.JSONObject;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
@@ -14,28 +14,34 @@ public class BinanceConnector implements KlinesArray {
     SpotClient spotClient = new SpotClientImpl();
 
     @Override
-    public ArrayList<Double> getKlines(String coinsPair, String time) {
+    public ArrayList<Kline> getKlines(String coinsPair, String time) {
         LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
         parameters.put("symbol", coinsPair);
         parameters.put("interval", time);
         String klinesData = spotClient.createMarket().klines(parameters);
-        parseJSON(klinesData);
-        ArrayList<Double> klinesArray = new ArrayList<>();
-        return klinesArray;
+        return parseJSON(klinesData);
     }
-    private void parseJSON(String klines) {
+    private ArrayList<Kline> parseJSON(String klines) {
         JSONParser jsonParser = new JSONParser();
-        ArrayList<Double> openPrice = new ArrayList<>();
         try {
-
-            JSONObject klinesData = (JSONObject) jsonParser.parse(klines);
-            System.out.println(klinesData);
-            //var stringData = klinesData.getJSONArray("");
-            //openPrice.add(stringData.getDouble(1));
-            //System.out.println(openPrice);
+            JSONArray klinesData = (JSONArray) jsonParser.parse(klines);
+            ArrayList<Kline> klineArrayList = new ArrayList<>();
+            for (Object kline: klinesData)
+            {
+                JSONArray klineToParse = (JSONArray) kline;
+                klineArrayList.add(parseSingleKline(klineToParse));
+            }
+            return klineArrayList;
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
+    }
+    private Kline parseSingleKline(JSONArray klineArray) {
+        long openTime = Long.parseLong(klineArray.get(0).toString());
+        double openPrice = Double.parseDouble(klineArray.get(1).toString());
+        double closePrice = Double.parseDouble(klineArray.get(4).toString());
+        long closeTime = Long.parseLong(klineArray.get(6).toString());
+        return new Kline(openTime, closeTime, openPrice, closePrice);
     }
 }
 

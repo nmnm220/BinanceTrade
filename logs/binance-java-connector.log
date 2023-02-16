@@ -1,5 +1,37 @@
-2023-02-15 13:34:55.889[1676457295889] | INFO  | main       | c.b.c.client.utils.RequestHandler    - GET https://api.binance.com/api/v3/klines?symbol=BNBUSDT&interval=1h
-2023-02-15 15:55:20.857[1676465720857] | INFO  | main       | c.b.c.client.utils.RequestHandler    - GET https://api.binance.com/api/v3/klines?symbol=BNBUSDT&interval=1m
-2023-02-15 16:03:21.891[1676466201891] | INFO  | main       | c.b.c.client.utils.RequestHandler    - GET https://api.binance.com/api/v3/klines?symbol=BNBUSDT&interval=1m
-2023-02-15 16:05:50.330[1676466350330] | INFO  | main       | c.b.c.client.utils.RequestHandler    - GET https://api.binance.com/api/v3/klines?symbol=BNBUSDT&interval=1m
-2023-02-15 16:06:25.651[1676466385651] | INFO  | main       | c.b.c.client.utils.RequestHandler    - GET https://api.binance.com/api/v3/klines?symbol=BNBUSDT&interval=1m
+2023-02-16 11:44:03.203[1676537043203] | INFO  | main       | c.b.c.client.utils.RequestHandler    - GET https://api.binance.com/api/v3/klines?symbol=BNBUSDT&interval=1m
+2023-02-16 11:45:20.891[1676537120891] | INFO  | main       | c.b.c.client.utils.RequestHandler    - GET https://api.binance.com/api/v3/klines?symbol=BNBUSDT&interval=1m
+2023-02-16 11:45:48.677[1676537148677] | INFO  | main       | c.b.c.client.utils.RequestHandler    - GET https://api.binance.com/api/v3/klines?symbol=BNBUSDT&interval=1m
+2023-02-16 11:46:28.444[1676537188444] | INFO  | main       | c.b.c.client.utils.RequestHandler    - GET https://api.binance.com/api/v3/klines?symbol=BNBUSDT&interval=1m
+2023-02-16 11:46:57.618[1676537217618] | INFO  | main       | c.b.c.client.utils.RequestHandler    - GET https://api.binance.com/api/v3/klines?symbol=BNBUSDT&interval=1m
+2023-02-16 11:48:42.796[1676537322796] | INFO  | main       | c.b.c.client.utils.RequestHandler    - GET https://api.binance.com/api/v3/klines?symbol=BNBUSDT&interval=1m
+2023-02-16 11:50:19.059[1676537419059] | INFO  | main       | c.b.c.client.utils.RequestHandler    - GET https://api.binance.com/api/v3/klines?symbol=BNBUSDT&interval=1m
+2023-02-16 11:50:45.502[1676537445502] | INFO  | main       | c.b.c.client.utils.RequestHandler    - GET https://api.binance.com/api/v3/klines?symbol=BNBUSDT&interval=1m
+2023-02-16 12:04:47.259[1676538287259] | INFO  | main       | c.b.c.client.utils.RequestHandler    - GET https://api.binance.com/api/v3/klines?symbol=BNBUSDT&interval=1m
+2023-02-16 12:06:31.741[1676538391741] | INFO  | main       | c.b.c.client.utils.RequestHandler    - GET https://api.binance.com/api/v3/klines?symbol=BNBUSDT&interval=1m
+2023-02-16 12:06:45.700[1676538405700] | INFO  | main       | c.b.c.client.utils.RequestHandler    - GET https://api.binance.com/api/v3/klines?symbol=BNBUSDT&interval=1m
+2023-02-16 12:07:07.519[1676538427519] | INFO  | main       | c.b.c.client.utils.RequestHandler    - GET https://api.binance.com/api/v3/klines?symbol=BNBUSDT&interval=1m
+2023-02-16 12:07:53.402[1676538473402] | INFO  | main       | c.b.c.client.utils.RequestHandler    - GET https://api.binance.com/api/v3/klines?symbol=BNBUSDT&interval=1m
+2023-02-16 12:08:15.623[1676538495623] | INFO  | main       | c.b.c.client.utils.RequestHandler    - GET https://api.binance.com/api/v3/klines?symbol=BNBUSDT&interval=1m
+2023-02-16 12:08:34.649[1676538514649] | INFO  | main       | c.b.c.client.utils.RequestHandler    - GET https://api.binance.com/api/v3/klines?symbol=BNBUSDT&interval=1m
+2023-02-16 12:12:33.136[1676538753136] | INFO  | main       | c.b.c.client.utils.RequestHandler    - GET https://api.binance.com/api/v3/klines?symbol=BNBUSDT&interval=1m
+2023-02-16 12:14:20.250[1676538860250] | INFO  | main       | c.b.c.client.utils.RequestHandler    - GET https://api.binance.com/api/v3/klines?symbol=BNBUSDT&interval=1m
+2023-02-16 12:14:45.356[1676538885356] | INFO  | main       | c.b.c.client.utils.RequestHandler    - GET https://api.binance.com/api/v3/klines?symbol=BNBUSDT&interval=1m
+2023-02-16 13:11:14.760[1676542274760] | INFO  | JavaFX Application Thread | c.b.c.client.utils.RequestHandler    - GET https://api.binance.com/api/v3/klines?symbol=BNBUSDT&interval=1m
+2023-02-16 13:12:19.220[1676542339220] | INFO  | JavaFX Application Thread | c.b.c.client.utils.RequestHandler    - GET https://api.binance.com/api/v3/klines?symbol=BNBUSDT&interval=1m
+2023-02-16 13:12:46.816[1676542366816] | INFO  | JavaFX Application Thread | c.b.c.client.utils.RequestHandler    - GET https://api.binance.com/api/v3/klines?symbol=BNBUSDT&interval=1m
+2023-02-16 13:13:20.103[1676542400103] | INFO  | JavaFX Application Thread | c.b.c.client.utils.RequestHandler    - GET https://api.binance.com/api/v3/klines?symbol=BNBUSDT&interval=1m
+2023-02-16 13:13:47.378[1676542427378] | INFO  | JavaFX Application Thread | c.b.c.client.utils.RequestHandler    - GET https://api.binance.com/api/v3/klines?symbol=BNBUSDT&interval=1m
+2023-02-16 13:15:30.196[1676542530196] | INFO  | JavaFX Application Thread | c.b.c.client.utils.RequestHandler    - GET https://api.binance.com/api/v3/klines?symbol=BNBUSDT&interval=1m
+2023-02-16 13:16:23.293[1676542583293] | INFO  | JavaFX Application Thread | c.b.c.client.utils.RequestHandler    - GET https://api.binance.com/api/v3/klines?symbol=BNBUSDT&interval=1m
+2023-02-16 13:17:01.219[1676542621219] | INFO  | JavaFX Application Thread | c.b.c.client.utils.RequestHandler    - GET https://api.binance.com/api/v3/klines?symbol=BNBUSDT&interval=1m
+2023-02-16 13:17:53.408[1676542673408] | INFO  | JavaFX Application Thread | c.b.c.client.utils.RequestHandler    - GET https://api.binance.com/api/v3/klines?symbol=BNBUSDT&interval=1m
+2023-02-16 13:19:10.352[1676542750352] | INFO  | JavaFX Application Thread | c.b.c.client.utils.RequestHandler    - GET https://api.binance.com/api/v3/klines?symbol=BNBUSDT&interval=1m
+2023-02-16 13:20:09.111[1676542809111] | INFO  | JavaFX Application Thread | c.b.c.client.utils.RequestHandler    - GET https://api.binance.com/api/v3/klines?symbol=BNBUSDT&interval=1m
+2023-02-16 13:22:23.239[1676542943239] | INFO  | JavaFX Application Thread | c.b.c.client.utils.RequestHandler    - GET https://api.binance.com/api/v3/klines?symbol=BNBUSDT&interval=1m
+2023-02-16 13:23:52.650[1676543032650] | INFO  | JavaFX Application Thread | c.b.c.client.utils.RequestHandler    - GET https://api.binance.com/api/v3/klines?symbol=BNBUSDT&interval=1m
+2023-02-16 13:24:53.555[1676543093555] | INFO  | JavaFX Application Thread | c.b.c.client.utils.RequestHandler    - GET https://api.binance.com/api/v3/klines?symbol=BNBUSDT&interval=1m
+2023-02-16 13:25:28.465[1676543128465] | INFO  | JavaFX Application Thread | c.b.c.client.utils.RequestHandler    - GET https://api.binance.com/api/v3/klines?symbol=BNBUSDT&interval=1m
+2023-02-16 13:26:33.556[1676543193556] | INFO  | JavaFX Application Thread | c.b.c.client.utils.RequestHandler    - GET https://api.binance.com/api/v3/klines?symbol=BNBUSDT&interval=1m
+2023-02-16 13:30:06.743[1676543406743] | INFO  | JavaFX Application Thread | c.b.c.client.utils.RequestHandler    - GET https://api.binance.com/api/v3/klines?symbol=BNBUSDT&interval=1m
+2023-02-16 13:31:47.894[1676543507894] | INFO  | JavaFX Application Thread | c.b.c.client.utils.RequestHandler    - GET https://api.binance.com/api/v3/klines?symbol=BNBUSDT&interval=1m
+2023-02-16 13:33:09.386[1676543589386] | INFO  | JavaFX Application Thread | c.b.c.client.utils.RequestHandler    - GET https://api.binance.com/api/v3/klines?symbol=BNBUSDT&interval=1m
