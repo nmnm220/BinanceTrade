@@ -19,28 +19,7 @@ public class GUI extends Application {
     BinanceConnector binanceConnector = new BinanceConnector();
 
     @Override
-    public void start(Stage primaryStage) {
-        primaryStage.setTitle("Show klines");
-        Pane root = new Pane();
-        ArrayList<Kline> klines = binanceConnector.getKlines("BNBUSDT", "1m");
-        for (int i = 0; i < 10; i++) {
-            double openPrice = klines.get(i).openPrice();
-            double closePrice = klines.get(i).closePrice();
-            double delta;
+    public void start(Stage stage) throws Exception {
 
-            if (openPrice > closePrice) {
-                delta = openPrice - closePrice;
-            } else delta = closePrice - openPrice;
-
-            Rectangle rectangle = new Rectangle();
-            rectangle.setX(20 + i * 10);
-            rectangle.setY(50);
-            rectangle.setWidth(5);
-            rectangle.setHeight(100 * delta);
-            root.getChildren().add(rectangle);
-            System.out.println(rectangle);
-        }
-        primaryStage.setScene(new Scene(root, 400, 400));
-        primaryStage.show();
     }
 }
