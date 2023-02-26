@@ -7,7 +7,6 @@ import tech.tablesaw.api.Table;
 import tech.tablesaw.io.Source;
 import tech.tablesaw.io.json.JsonReader;
 
-import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -20,16 +19,9 @@ public class BinanceConnector {
     private final String SECRET_KEY = "8NOKEJhswNFHNtNZb4nkyZ0158DI1So8Mml1ufEK626o8o8SSP1CLXQPRUpdyVyv";
     private final String URL = "https://testnet.binance.vision";
     private final SpotClient spotClient = new SpotClientImpl(API_KEY, SECRET_KEY, URL);
-
-    public void exchangeInfo() {
-        LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
-        System.out.println(spotClient.createMarket().exchangeInfo(parameters));
-    }
-
     public String getMostActiveToken() {
 
         LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
-        //parameters.put("symbol", "BNBUSDT");
         parameters.put("type", "FULL");
         String allTokens = spotClient.createMarket().ticker24H(parameters);
         JsonReader jsonReader = new JsonReader();
@@ -61,7 +53,6 @@ public class BinanceConnector {
     }
 
     public void start() {
-        boolean openPostion = false;
         double buyAmt = 20;
         String asset = getMostActiveToken();
         DoubleColumn lastPriceData = getLastData(asset, "1m", "2");
@@ -73,28 +64,14 @@ public class BinanceConnector {
 
         String qtyString = String.valueOf(qty).substring(0, 5);
 
-        LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
-        parameters.put("symbol", asset);
-        parameters.put("side", "BUY");
-        parameters.put("type", "MARKET");
-        parameters.put("quantity", qtyString);
-        spotClient.createTrade().newOrder(parameters);
-        openPostion = true;
-        System.out.println("Bought: " + asset + " Price: " + lastPrice + " Qty: " + qtyString +
-                " Target: " + target + " SL: " + stopLoss);
-        while (openPostion) {
+        openPosition(asset, lastPrice, target, stopLoss, qtyString);
+        boolean isOpenPosition = true;
+        while (isOpenPosition) {
             try {
                 double currPrice = getLastData(asset, "1m", "2").get(0);
                 if ((currPrice >= target) || (currPrice <= stopLoss)) {
-                    parameters = new LinkedHashMap<>();
-                    parameters.put("symbol", asset);
-                    parameters.put("side", "SELL");
-                    parameters.put("type", "MARKET");
-                    parameters.put("quantity", qtyString);
-                    spotClient.createTrade().newOrder(parameters);
-                    openPostion = false;
-                    double profit = currPrice - lastPrice;
-                    System.out.println("Sold Price " + currPrice + " Profit: " + profit);
+                    closePosition(asset, lastPrice, qtyString, currPrice);
+                    isOpenPosition = false;
                 } else {
                     Thread.sleep(5000);
                     System.out.println("Current price: " + currPrice);
@@ -103,6 +80,29 @@ public class BinanceConnector {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    private void closePosition(String asset, double lastPrice, String qtyString, double currPrice) {
+        LinkedHashMap<String, Object> parameters;
+        parameters = new LinkedHashMap<>();
+        parameters.put("symbol", asset);
+        parameters.put("side", "SELL");
+        parameters.put("type", "MARKET");
+        parameters.put("quantity", qtyString);
+        spotClient.createTrade().newOrder(parameters);
+        double profit = currPrice - lastPrice;
+        System.out.println("Sold Price " + currPrice + " Profit: " + profit);
+    }
+
+    private void openPosition(String asset, double lastPrice, double target, double stopLoss, String qtyString) {
+        LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
+        parameters.put("symbol", asset);
+        parameters.put("side", "BUY");
+        parameters.put("type", "MARKET");
+        parameters.put("quantity", qtyString);
+        spotClient.createTrade().newOrder(parameters);
+        System.out.println("Bought: " + asset + " Price: " + lastPrice + " Qty: " + qtyString +
+                " Target: " + target + " SL: " + stopLoss);
     }
 }
 
