@@ -103,15 +103,16 @@ public class BinanceConnector implements MarketConnector {
         System.out.println("Sold Price " + currPrice + " Profit: " + profit);*/
     }
 
-    public void openPosition(String asset, double buyPrice, double target, double stopLoss, String qtyString) {
+    public void openPosition(String asset, String qtyString) {
         LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
         parameters.put("symbol", asset);
         parameters.put("side", "BUY");
         parameters.put("type", "MARKET");
         parameters.put("quantity", qtyString);
         spotClient.createTrade().newOrder(parameters);
-        System.out.println("Bought: " + asset + " Price: " + buyPrice + " Qty: " + qtyString +
+        /*System.out.println("Bought: " + asset + " Price: " + buyPrice + " Qty: " + qtyString +
                 " Target: " + target + " SL: " + stopLoss);
+         */
     }
 }
 
