@@ -1,4 +1,4 @@
-package bin.trade.binanceapi;
+package bin.trade.binanceapi.records;
 
 import java.util.List;
 

@@ -1,7 +1,7 @@
 package bin.trade.binanceapi.backtest;
 
 import bin.trade.binanceapi.BinanceConnector;
-import bin.trade.binanceapi.Parameters;
+import bin.trade.binanceapi.records.Parameters;
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.Table;
@@ -13,12 +13,14 @@ import java.util.List;
 public class MainTest {
     public static void main(String[] args) {
         BinanceConnector binanceConnector = new BinanceConnector();
-        //binanceConnector.start();
-        BackTest backTest = new BackTest();
+
+        /*BackTest backTest = new BackTest();
         String mostActive = binanceConnector.getMostActiveToken();
         BackTest.setSymbol(mostActive);
         TestDataFileWriter.writeRecentData(BackTest.getSymbol(), 90, "1m");
-        test(backTest);
+        test(backTest);*/
+
+        binanceConnector.getOpenOrders();
     }
     private static void test(BackTest backTest) {
         for (int i = 0; i < 1000; i++) {

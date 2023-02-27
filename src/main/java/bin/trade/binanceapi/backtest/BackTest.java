@@ -1,8 +1,7 @@
 package bin.trade.binanceapi.backtest;
 
-import bin.trade.binanceapi.Candle;
-import bin.trade.binanceapi.Parameters;
-import bin.trade.binanceapi.Strategy;
+import bin.trade.binanceapi.records.Candle;
+import bin.trade.binanceapi.records.Parameters;
 
 import java.io.*;
 import java.util.*;
@@ -50,7 +49,7 @@ public class BackTest {
         if (marketData == null) {
             marketData = getDataFromFile();
         }
-        Strategy strategy = new Strategy();
+        TestStrategy strategy = new TestStrategy();
         for (int i = 1; i < marketData.size(); i++) {
             strategy.updateCurrentPrice(marketData.get(i).openPrice(), marketData.get(i - 1));
             strategy.updateCurrentPrice(marketData.get(i).lowPrice(), marketData.get(i - 1));

@@ -1,17 +1,20 @@
 package bin.trade.binanceapi;
 
+import bin.trade.binanceapi.records.Candle;
+import bin.trade.binanceapi.util.JsonSimpleParser;
 import com.binance.connector.client.SpotClient;
 import com.binance.connector.client.impl.SpotClientImpl;
-import tech.tablesaw.api.DoubleColumn;
+import tech.tablesaw.api.Row;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.io.Source;
 import tech.tablesaw.io.json.JsonReader;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-public class BinanceConnector {
+public class BinanceConnector implements MarketConnector {
 
     private final List<String> COLUMN_NAMES_KLINES = Arrays.asList("Kline open time", "Open price", "High price", "Low price", "Close price", "Volume", "Kline Close time", "Quote asset volume",
             "Number of trades", "Taker buy base asset volume", "Taker buy quote asset volume");
@@ -20,7 +23,6 @@ public class BinanceConnector {
     private final String URL = "https://testnet.binance.vision";
     private final SpotClient spotClient = new SpotClientImpl(API_KEY, SECRET_KEY, URL);
     public String getMostActiveToken() {
-
         LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
         parameters.put("type", "FULL");
         String allTokens = spotClient.createMarket().ticker24H(parameters);
@@ -36,7 +38,7 @@ public class BinanceConnector {
         return maxTickerName;
     }
 
-    public DoubleColumn getLastData(String coinsPair, String time, String lookback) {
+    public ArrayList<Candle> getLastCandles(String coinsPair, String time, String lookback) {
         LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
         parameters.put("symbol", coinsPair);
         parameters.put("interval", time);
@@ -44,64 +46,71 @@ public class BinanceConnector {
         String klinesData = spotClient.createMarket().klines(parameters);
 
         JsonReader jsonReader = new JsonReader();
-        Table table = jsonReader.read(Source.fromString(klinesData));
+        Table candlesData = jsonReader.read(Source.fromString(klinesData));
         for (int i = 0; i < COLUMN_NAMES_KLINES.size(); i++) {
-            table.column(i).setName(COLUMN_NAMES_KLINES.get(i));
+            candlesData.column(i).setName(COLUMN_NAMES_KLINES.get(i));
         }
-        return table.doubleColumn("Close price");
+        ArrayList<Candle> candles = new ArrayList<>(Integer.parseInt(lookback));
+        for (Row row: candlesData) {
+            double openPrice = row.getDouble("Open price");
+            double highPrice = row.getDouble("High price");
+            double lowPrice = row.getDouble("Low price");
+            double closePrice = row.getDouble("Close price");
+            candles.add(new Candle(openPrice, highPrice, lowPrice, closePrice));
+        }
+        return candles;
+    }
+    public double getCurrentPrice(String asset) {
+        LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
+        parameters.put("symbol", asset);
+        String priceData = spotClient.createMarket().tickerSymbol(parameters);
+        JsonReader jsonReader = new JsonReader();
+        //Table price = jsonReader.read(Source.fromString(priceData));
+        JsonSimpleParser parser = new JsonSimpleParser();
+        return parser.getValue(priceData, "price");
+    }
+    public double getBalance(String coin) {
+        LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
+        parameters.put("recvWindow", 60000);
+        parameters.put("timestamp", System.currentTimeMillis() / 1000);
+        String balance = spotClient.createTrade().account(parameters);
+        JsonSimpleParser parser = new JsonSimpleParser();
+        String balances = parser.getObj(balance, "balances").toString();
 
+        JsonReader jsonReader = new JsonReader();
+        Table allBalances = jsonReader.read(Source.fromString(balances));
+        Table reqBalance = allBalances.where(c -> c.stringColumn("asset").containsString(coin));
+        return reqBalance.doubleColumn("free").get(0);
+    }
+    public void getOpenOrders() {
+        LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
+        parameters.put("recvWindow", 60000);
+        parameters.put("timestamp", System.currentTimeMillis() / 1000);
+        String openOrders = spotClient.createTrade().getOpenOrders(parameters);
+        JsonReader jsonReader = new JsonReader();
+        Table allOrders = jsonReader.read(Source.fromString(openOrders));
+        System.out.println(openOrders);
     }
 
-    public void start() {
-        double buyAmt = 20;
-        String asset = getMostActiveToken();
-        DoubleColumn lastPriceData = getLastData(asset, "1m", "2");
-        double lastPrice = lastPriceData.get(0);
-        double preLastPrice = lastPriceData.get(1);
-        double target = 1.02 * lastPrice;
-        double stopLoss = 0.975 * lastPrice;
-        double qty = buyAmt / lastPrice;
-
-        String qtyString = String.valueOf(qty).substring(0, 5);
-
-        openPosition(asset, lastPrice, target, stopLoss, qtyString);
-        boolean isOpenPosition = true;
-        while (isOpenPosition) {
-            try {
-                double currPrice = getLastData(asset, "1m", "2").get(0);
-                if ((currPrice >= target) || (currPrice <= stopLoss)) {
-                    closePosition(asset, lastPrice, qtyString, currPrice);
-                    isOpenPosition = false;
-                } else {
-                    Thread.sleep(5000);
-                    System.out.println("Current price: " + currPrice);
-                }
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        }
-    }
-
-    private void closePosition(String asset, double lastPrice, String qtyString, double currPrice) {
-        LinkedHashMap<String, Object> parameters;
-        parameters = new LinkedHashMap<>();
+    public void closePosition(String asset, String qtyString) {
+        LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
         parameters.put("symbol", asset);
         parameters.put("side", "SELL");
         parameters.put("type", "MARKET");
         parameters.put("quantity", qtyString);
         spotClient.createTrade().newOrder(parameters);
-        double profit = currPrice - lastPrice;
-        System.out.println("Sold Price " + currPrice + " Profit: " + profit);
+        /*double profit = currPrice - sellPrice;
+        System.out.println("Sold Price " + currPrice + " Profit: " + profit);*/
     }
 
-    private void openPosition(String asset, double lastPrice, double target, double stopLoss, String qtyString) {
+    public void openPosition(String asset, double buyPrice, double target, double stopLoss, String qtyString) {
         LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
         parameters.put("symbol", asset);
         parameters.put("side", "BUY");
         parameters.put("type", "MARKET");
         parameters.put("quantity", qtyString);
         spotClient.createTrade().newOrder(parameters);
-        System.out.println("Bought: " + asset + " Price: " + lastPrice + " Qty: " + qtyString +
+        System.out.println("Bought: " + asset + " Price: " + buyPrice + " Qty: " + qtyString +
                 " Target: " + target + " SL: " + stopLoss);
     }
 }

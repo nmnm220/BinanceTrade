@@ -1,5 +1,7 @@
 package bin.trade.binanceapi;
 
+import bin.trade.binanceapi.records.Candle;
+
 public class PatternDetector {
     double high;
     double low;
