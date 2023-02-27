@@ -1,4 +1,4 @@
-package bin.trade.binanceapi.util;
+package bin.trade.logic.util;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;

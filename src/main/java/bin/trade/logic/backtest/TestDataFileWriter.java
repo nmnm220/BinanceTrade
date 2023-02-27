@@ -1,4 +1,4 @@
-package bin.trade.binanceapi.backtest;
+package bin.trade.logic.backtest;
 
 import com.binance.connector.client.SpotClient;
 import com.binance.connector.client.impl.SpotClientImpl;

@@ -1,7 +1,7 @@
-package bin.trade.binanceapi;
+package bin.trade.logic.market;
 
-import bin.trade.binanceapi.records.Candle;
-import bin.trade.binanceapi.util.JsonSimpleParser;
+import bin.trade.logic.records.Candle;
+import bin.trade.logic.util.JsonSimpleParser;
 import com.binance.connector.client.SpotClient;
 import com.binance.connector.client.impl.SpotClientImpl;
 import tech.tablesaw.api.Row;

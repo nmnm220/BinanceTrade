@@ -1,6 +1,5 @@
 package bin.trade.gui;
 
-import bin.trade.binanceapi.BinanceConnector;
 import javafx.application.Application;
 import javafx.stage.Stage;
 

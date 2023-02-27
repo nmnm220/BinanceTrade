@@ -1,10 +1,8 @@
-package bin.trade.binanceapi;
+package bin.trade.logic.market;
 
-import bin.trade.binanceapi.records.Candle;
-import tech.tablesaw.api.DoubleColumn;
+import bin.trade.logic.records.Candle;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public interface MarketConnector {
     void openPosition(String asset, double lastPrice, double target, double stopLoss, String qtyString);

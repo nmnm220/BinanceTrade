@@ -1,7 +1,7 @@
-package bin.trade.binanceapi.backtest;
+package bin.trade.logic.backtest;
 
-import bin.trade.binanceapi.BinanceConnector;
-import bin.trade.binanceapi.records.Parameters;
+import bin.trade.logic.market.BinanceConnector;
+import bin.trade.logic.records.Parameters;
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.Table;

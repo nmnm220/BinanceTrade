@@ -1,6 +1,6 @@
-package bin.trade.binanceapi;
+package bin.trade.logic.tools;
 
-import bin.trade.binanceapi.records.Candle;
+import bin.trade.logic.records.Candle;
 
 public class PatternDetector {
     double high;

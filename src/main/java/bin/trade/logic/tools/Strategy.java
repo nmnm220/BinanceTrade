@@ -1,6 +1,7 @@
-package bin.trade.binanceapi;
+package bin.trade.logic.tools;
 
-import bin.trade.binanceapi.records.Candle;
+import bin.trade.logic.market.MarketConnector;
+import bin.trade.logic.records.Candle;
 
 import java.util.LinkedList;
 import java.util.List;
