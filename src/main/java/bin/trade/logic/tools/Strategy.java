@@ -28,7 +28,17 @@ public class Strategy {
     }
 
     public void run() {
-
+        if (isOpenPosition) {
+            if (checkSaleConditions()) {
+                isOpenPosition = false;
+                closePosition();
+            }
+        } else {
+            if (checkBuyConditions()) {
+                isOpenPosition = true;
+                openPosition();
+            }
+        }
     }
 
     public void setCoefficients(double PROFIT_COEFF, double STOP_COEFF) {
@@ -37,10 +47,7 @@ public class Strategy {
     }
 
     private void newOrder() {
-        if (isOpenPosition)
-            checkSaleConditions();
-        else
-            checkBuyConditions();
+
     }
 
     private double getCurrentPrice() {
@@ -59,11 +66,9 @@ public class Strategy {
         marketConnector.openPosition(asset, getQuantity(balance));
     }
 
-    private void checkSaleConditions() {
+    private boolean checkSaleConditions() {
         double currentPrice = getCurrentPrice();
-        if ((currentPrice >= targetPrice) || (currentPrice <= stopPrice)) {
-            closePosition();
-        }
+        return ((currentPrice >= targetPrice) || (currentPrice <= stopPrice));
     }
 
     private ArrayList<Candle> getCandles(String candlesQuantity) {

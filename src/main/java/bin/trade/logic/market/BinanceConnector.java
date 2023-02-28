@@ -3,7 +3,11 @@ package bin.trade.logic.market;
 import bin.trade.logic.records.Candle;
 import bin.trade.logic.util.JsonSimpleParser;
 import com.binance.connector.client.SpotClient;
+import com.binance.connector.client.exceptions.BinanceClientException;
 import com.binance.connector.client.impl.SpotClientImpl;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import tech.tablesaw.api.Row;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.io.Source;
@@ -22,20 +26,26 @@ public class BinanceConnector implements MarketConnector {
     private final String SECRET_KEY = "8NOKEJhswNFHNtNZb4nkyZ0158DI1So8Mml1ufEK626o8o8SSP1CLXQPRUpdyVyv";
     private final String URL = "https://testnet.binance.vision";
     private final SpotClient spotClient = new SpotClientImpl(API_KEY, SECRET_KEY, URL);
+    private final Logger logger = LogManager.getLogger();
+
     public String getMostActiveToken() {
         LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
         parameters.put("type", "FULL");
-        String allTokens = spotClient.createMarket().ticker24H(parameters);
-        JsonReader jsonReader = new JsonReader();
-        Table allTickers = jsonReader.read(Source.fromString(allTokens));
-        Table workTickers = allTickers.where(t -> t.stringColumn("symbol").containsString("USDT"));
+        try {
+            String allTokens = spotClient.createMarket().ticker24H(parameters);
+            JsonReader jsonReader = new JsonReader();
+            Table allTickers = jsonReader.read(Source.fromString(allTokens));
+            Table workTickers = allTickers.where(t -> t.stringColumn("symbol").containsString("USDT"));
 
-        workTickers = workTickers.sortDescendingOn("priceChangePercent");
-        double maxChange = workTickers.doubleColumn("priceChangePercent").get(0);
-        String maxTickerName = workTickers.stringColumn("symbol").get(0);
-        System.out.println(maxChange);
-        System.out.println(maxTickerName);
-        return maxTickerName;
+            workTickers = workTickers.sortDescendingOn("priceChangePercent");
+            double maxChange = workTickers.doubleColumn("priceChangePercent").get(0);
+            String maxTickerName = workTickers.stringColumn("symbol").get(0);
+            logger.info("Got most active token: " + maxTickerName + ", Percent price change: " + maxChange);
+            return maxTickerName;
+        } catch (BinanceClientException e) {
+            logger.error(e.getMessage());
+        }
+        return null;
     }
 
     public ArrayList<Candle> getLastCandles(String coinsPair, String time, String lookback) {
@@ -51,15 +61,17 @@ public class BinanceConnector implements MarketConnector {
             candlesData.column(i).setName(COLUMN_NAMES_KLINES.get(i));
         }
         ArrayList<Candle> candles = new ArrayList<>(Integer.parseInt(lookback));
-        for (Row row: candlesData) {
+        for (Row row : candlesData) {
             double openPrice = row.getDouble("Open price");
             double highPrice = row.getDouble("High price");
             double lowPrice = row.getDouble("Low price");
             double closePrice = row.getDouble("Close price");
             candles.add(new Candle(openPrice, highPrice, lowPrice, closePrice));
         }
+        logger.info("Got last" + lookback + "candles");
         return candles;
     }
+
     public double getCurrentPrice(String asset) {
         LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
         parameters.put("symbol", asset);
@@ -69,6 +81,7 @@ public class BinanceConnector implements MarketConnector {
         JsonSimpleParser parser = new JsonSimpleParser();
         return parser.getValue(priceData, "price");
     }
+
     public double getBalance(String coin) {
         LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
         parameters.put("recvWindow", 60000);
@@ -82,6 +95,7 @@ public class BinanceConnector implements MarketConnector {
         Table reqBalance = allBalances.where(c -> c.stringColumn("asset").containsString(coin));
         return reqBalance.doubleColumn("free").get(0);
     }
+
     public void getOpenOrders() {
         LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
         parameters.put("recvWindow", 60000);
