@@ -67,7 +67,7 @@ public class BinanceConnector implements MarketConnector {
                 double closePrice = row.getDouble("Close price");
                 candles.add(new Candle(openPrice, highPrice, lowPrice, closePrice));
             }
-            logger.info("Got last " + lookback + " candles");
+            logger.debug("Got last " + lookback + " candles");
             return candles;
         } catch (BinanceClientException e) {
             logger.error("Error: " + e.getMessage());
