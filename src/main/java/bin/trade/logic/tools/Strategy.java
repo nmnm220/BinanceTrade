@@ -9,6 +9,7 @@ import java.util.List;
 
 public class Strategy {
     private final MarketConnector marketConnector;
+    private enum sellType{SELL_BY_STOP, SELL_TAKE_PROFIT, NO_SELL}
     private double balance;
     private double targetPrice;
     private double stopPrice;
@@ -17,19 +18,21 @@ public class Strategy {
     private final List<Candle> candles = new LinkedList<>();
     private double quantity;
     private String asset;
+    private double tradingBalance = 20;
+    private final double initBalance;
     private double PROFIT_COEFF = 1.02;
     private double STOP_COEFF = 0.55;
     private String time = "1m";
 
-    Strategy(MarketConnector marketConnector, String asset) {
+    public Strategy(MarketConnector marketConnector, String asset) {
         this.marketConnector = marketConnector;
         this.asset = asset;
-        balance = marketConnector.getBalance("USDT");
+        initBalance = marketConnector.getBalance("USDT");
     }
 
-    public void run() {
+    public void checkOut() {
         if (isOpenPosition) {
-            if (checkSaleConditions()) {
+            if (checkSaleConditions().equals(sellType.SELL_TAKE_PROFIT) || checkSaleConditions().equals(sellType.SELL_BY_STOP)) {
                 isOpenPosition = false;
                 closePosition();
             }
@@ -46,29 +49,35 @@ public class Strategy {
         this.STOP_COEFF = STOP_COEFF;
     }
 
-    private void newOrder() {
-
-    }
-
     private double getCurrentPrice() {
         return marketConnector.getCurrentPrice(asset);
     }
 
     private String getQuantity(double balance) {
-        return String.valueOf(Math.ceil(balance / getCurrentPrice()));
+        return String.valueOf(Math.ceil(tradingBalance / getCurrentPrice()));
     }
 
     private void closePosition() {
-        marketConnector.closePosition(asset, getQuantity(balance));
+        marketConnector.closePosition(asset, getQuantity(tradingBalance));
+        balance = marketConnector.getBalance(asset);
+        tradingBalance = balance - initBalance;
     }
 
     private void openPosition() {
-        marketConnector.openPosition(asset, getQuantity(balance));
+        marketConnector.openPosition(asset, getQuantity(tradingBalance));
+        targetPrice = getCurrentPrice() * PROFIT_COEFF;
+        stopPrice = getCurrentPrice() * STOP_COEFF;
     }
 
-    private boolean checkSaleConditions() {
+    private sellType checkSaleConditions() {
         double currentPrice = getCurrentPrice();
-        return ((currentPrice >= targetPrice) || (currentPrice <= stopPrice));
+        if (currentPrice >= targetPrice) {
+            return sellType.SELL_TAKE_PROFIT;
+        }
+        else if (currentPrice <= stopPrice) {
+            return sellType.SELL_BY_STOP;
+        }
+        else return sellType.NO_SELL;
     }
 
     private ArrayList<Candle> getCandles(String candlesQuantity) {
