@@ -67,7 +67,7 @@ public class BinanceConnector implements MarketConnector {
                 double closePrice = row.getDouble("Close price");
                 candles.add(new Candle(openPrice, highPrice, lowPrice, closePrice));
             }
-            logger.info("Got last " + lookback + " candles");
+            logger.debug("Got last " + lookback + " candles");
             return candles;
         } catch (BinanceClientException e) {
             logger.error("Error: " + e.getMessage());
@@ -102,7 +102,8 @@ public class BinanceConnector implements MarketConnector {
             JsonReader jsonReader = new JsonReader();
             Table allBalances = jsonReader.read(Source.fromString(balances));
             Table reqBalance = allBalances.where(c -> c.stringColumn("asset").containsString(coin));
-            double balanceOut = 0;
+            double balanceOut = Double.parseDouble(reqBalance.column("free").get(0).toString());
+            /*
             if (Integer.TYPE.isInstance(reqBalance.column("free").get(0)))
             {
                 balanceOut = reqBalance.intColumn("free").get(0);
@@ -110,6 +111,7 @@ public class BinanceConnector implements MarketConnector {
             else if (Double.TYPE.isInstance(reqBalance.column("free").get(0))) {
                 balanceOut = reqBalance.doubleColumn("free").get(0);
             }
+             */
             //balanceOut = reqBalance.doubleColumn("free").get(0);
             logger.info("Got balance: " + balanceOut);
             return balanceOut;

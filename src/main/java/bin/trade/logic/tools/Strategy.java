@@ -1,7 +1,10 @@
 package bin.trade.logic.tools;
 
+import bin.trade.logic.market.BinanceConnector;
 import bin.trade.logic.market.MarketConnector;
 import bin.trade.logic.records.Candle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -23,6 +26,7 @@ public class Strategy {
     private double PROFIT_COEFF = 1.02;
     private double STOP_COEFF = 0.55;
     private String time = "1m";
+    private final Logger logger = LoggerFactory.getLogger(Strategy.class);
 
     public Strategy(MarketConnector marketConnector, String asset) {
         this.marketConnector = marketConnector;
@@ -61,6 +65,7 @@ public class Strategy {
         marketConnector.closePosition(asset, getQuantity(tradingBalance));
         balance = marketConnector.getBalance(asset);
         tradingBalance = balance - initBalance;
+        logger.info("New trading balance: " + tradingBalance);
     }
 
     private void openPosition() {
