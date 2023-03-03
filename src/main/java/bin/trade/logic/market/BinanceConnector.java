@@ -61,10 +61,10 @@ public class BinanceConnector implements MarketConnector {
             }
             ArrayList<Candle> candles = new ArrayList<>(Integer.parseInt(lookback));
             for (Row row : candlesData) {
-                double openPrice = row.getDouble("Open price");
-                double highPrice = row.getDouble("High price");
-                double lowPrice = row.getDouble("Low price");
-                double closePrice = row.getDouble("Close price");
+                double openPrice = row.getNumber("Open price");
+                double highPrice = row.getNumber("High price");
+                double lowPrice = row.getNumber("Low price");
+                double closePrice = row.getNumber("Close price");
                 candles.add(new Candle(openPrice, highPrice, lowPrice, closePrice));
             }
             logger.debug("Got last " + lookback + " candles");
