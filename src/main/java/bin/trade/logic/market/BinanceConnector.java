@@ -135,6 +135,7 @@ public class BinanceConnector implements MarketConnector {
         parameters.put("symbol", asset);
         parameters.put("side", "SELL");
         parameters.put("type", "MARKET");
+        parameters.put("newOrderRespType", "RESULT");
         parameters.put("quantity", qtyString);
         try {
             String closedPosition = spotClient.createTrade().newOrder(parameters);
@@ -154,6 +155,7 @@ public class BinanceConnector implements MarketConnector {
         parameters.put("symbol", asset);
         parameters.put("side", "BUY");
         parameters.put("type", "MARKET");
+        parameters.put("newOrderRespType", "RESULT");
         parameters.put("quantity", qtyString);
         try {
             String openPosition = spotClient.createTrade().newOrder(parameters);
