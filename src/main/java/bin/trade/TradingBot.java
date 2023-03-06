@@ -7,7 +7,7 @@ import bin.trade.logic.tools.Strategy;
 public class TradingBot {
     private static MarketConnector marketConnector = new BinanceConnector();
     private static String mostActive = marketConnector.getMostActiveToken();
-    private static final Strategy strategy = new Strategy(marketConnector, mostActive);
+    private static final Strategy strategy = new Strategy(marketConnector, mostActive, "USDT");
 
     public static void main(String[] args) {
         while (true) {

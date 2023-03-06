@@ -12,10 +12,7 @@ import tech.tablesaw.api.Table;
 import tech.tablesaw.io.Source;
 import tech.tablesaw.io.json.JsonReader;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 
 public class BinanceConnector implements MarketConnector {
 
@@ -103,19 +100,9 @@ public class BinanceConnector implements MarketConnector {
             Table allBalances = jsonReader.read(Source.fromString(balances));
             Table reqBalance = allBalances.where(c -> c.stringColumn("asset").containsString(coin));
             double balanceOut = Double.parseDouble(reqBalance.column("free").get(0).toString());
-            /*
-            if (Integer.TYPE.isInstance(reqBalance.column("free").get(0)))
-            {
-                balanceOut = reqBalance.intColumn("free").get(0);
-            }
-            else if (Double.TYPE.isInstance(reqBalance.column("free").get(0))) {
-                balanceOut = reqBalance.doubleColumn("free").get(0);
-            }
-             */
-            //balanceOut = reqBalance.doubleColumn("free").get(0);
             logger.info("Got balance: " + balanceOut);
             return balanceOut;
-        } catch (BinanceClientException e) {
+        } catch (Exception e) {
             logger.error("Error: " + e.getMessage());
             return 0;
         }
@@ -139,12 +126,12 @@ public class BinanceConnector implements MarketConnector {
         parameters.put("quantity", qtyString);
         try {
             String closedPosition = spotClient.createTrade().newOrder(parameters);
-            JsonReader jsonReader = new JsonReader();
-            Table orderData = jsonReader.read(Source.fromString(closedPosition));
-            double receivedQty = orderData.doubleColumn("executedQty").get(0);
-            logger.info("Closed position: " + orderData);
-            return receivedQty;
-        } catch (BinanceClientException e) {
+            JsonSimpleParser jsonSimpleParser = new JsonSimpleParser();
+            String price = String.valueOf(getCurrentPrice(asset));
+            String execQty = (String) jsonSimpleParser.getObj(closedPosition, "executedQty");
+            logger.info("Closed position: \nprice " + price + " \nQty:" + execQty);
+            return Double.parseDouble(execQty);
+        } catch (Exception e) {
             logger.error("Error: " + e.getMessage());
             return 0;
         }
@@ -159,10 +146,11 @@ public class BinanceConnector implements MarketConnector {
         parameters.put("quantity", qtyString);
         try {
             String openPosition = spotClient.createTrade().newOrder(parameters);
-            JsonReader jsonReader = new JsonReader();
-            Table orderData = jsonReader.read(Source.fromString(openPosition));
-            logger.info("Closed position: " + orderData);
-        } catch (BinanceClientException e) {
+            JsonSimpleParser jsonSimpleParser = new JsonSimpleParser();
+            String price = String.valueOf(getCurrentPrice(asset));
+            String execQty = (String) jsonSimpleParser.getObj(openPosition, "executedQty");
+            logger.info("Opened position:\nprice " + price + " \nQty:" + execQty);
+        } catch (Exception e) {
             logger.error("Error: " + e.getMessage());
         }
     }
