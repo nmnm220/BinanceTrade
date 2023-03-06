@@ -58,7 +58,7 @@ public class Strategy {
     }
 
     private String getQuantity(double balance) {
-        return String.valueOf(Math.ceil(tradingBalance / getCurrentPrice()));
+        return String.valueOf((tradingBalance / getCurrentPrice())).substring(0, 5);
     }
 
     private void closePosition() {
