@@ -1,7 +1,7 @@
-package bin.trade.logic.backtest;
+package bin.trade.backtest;
 
-import bin.trade.logic.records.Candle;
-import bin.trade.logic.records.Parameters;
+import bin.trade.records.Candle;
+import bin.trade.records.Parameters;
 
 import java.io.*;
 import java.util.*;

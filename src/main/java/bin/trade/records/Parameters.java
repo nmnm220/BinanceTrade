@@ -1,4 +1,4 @@
-package bin.trade.logic.records;
+package bin.trade.records;
 
 import java.util.List;
 

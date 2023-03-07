@@ -1,7 +1,7 @@
-package bin.trade.logic.market;
+package bin.trade.market;
 
-import bin.trade.logic.records.Candle;
-import bin.trade.logic.util.JsonSimpleParser;
+import bin.trade.records.Candle;
+import bin.trade.util.JsonSimpleParser;
 import com.binance.connector.client.SpotClient;
 import com.binance.connector.client.exceptions.BinanceClientException;
 import com.binance.connector.client.impl.SpotClientImpl;
@@ -129,15 +129,15 @@ public class BinanceConnector implements MarketConnector {
             JsonSimpleParser jsonSimpleParser = new JsonSimpleParser();
             String price = String.valueOf(getCurrentPrice(asset));
             String execQty = (String) jsonSimpleParser.getObj(closedPosition, "executedQty");
-            logger.info("Closed position: \nprice " + price + " \nQty:" + execQty);
-            return Double.parseDouble(execQty);
+            logger.info("Closed position: price " + price + " qty: " + execQty);
+            return Double.parseDouble(price);
         } catch (Exception e) {
             logger.error("Error: " + e.getMessage());
             return 0;
         }
     }
 
-    public void openPosition(String asset, String qtyString) {
+    public double openPosition(String asset, String qtyString) {
         LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
         parameters.put("symbol", asset);
         parameters.put("side", "BUY");
@@ -149,9 +149,11 @@ public class BinanceConnector implements MarketConnector {
             JsonSimpleParser jsonSimpleParser = new JsonSimpleParser();
             String price = String.valueOf(getCurrentPrice(asset));
             String execQty = (String) jsonSimpleParser.getObj(openPosition, "executedQty");
-            logger.info("Opened position:\nprice " + price + " \nQty:" + execQty);
+            logger.info("Opened position: price " + price + " qty: " + execQty);
+            return Double.parseDouble(price);
         } catch (Exception e) {
             logger.error("Error: " + e.getMessage());
+            return 0;
         }
     }
 }

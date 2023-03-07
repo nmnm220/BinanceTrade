@@ -1,36 +1,36 @@
-package bin.trade.logic.tools;
+package bin.trade.tools;
 
-import bin.trade.logic.market.BinanceConnector;
-import bin.trade.logic.market.MarketConnector;
-import bin.trade.logic.records.Candle;
+import bin.trade.datahandler.TradeDataHandler;
+import bin.trade.market.MarketConnector;
+import bin.trade.records.Candle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Locale;
 
 public class Strategy {
     private final MarketConnector marketConnector;
-    private enum sellType{SELL_BY_STOP, SELL_TAKE_PROFIT, NO_SELL}
+    public enum SellType {SELL_BY_STOP, SELL_TAKE_PROFIT, NO_SELL}
     private double balance;
     private double targetPrice;
     private double stopPrice;
     private boolean isOpenPosition = false;
     private final PatternDetector patternDetector = new PatternDetector();
-    private final List<Candle> candles = new LinkedList<>();
-    private double quantity;
+    //private final List<Candle> candles = new LinkedList<>();
+    //private double quantity;
     private String asset;
-    private double tradingBalance = 20;
+    private double tradeBalance = 20;
     private final double initBalance;
     private double PROFIT_COEFF = 1.02;
     private double STOP_COEFF = 0.55;
     private String coin = "USDT";
     private String time = "1m";
     private final Logger logger = LoggerFactory.getLogger(Strategy.class);
+    private final TradeDataHandler dataHandler;
 
-    public Strategy(MarketConnector marketConnector, String asset, String coin) {
+    public Strategy(MarketConnector marketConnector, TradeDataHandler dataHandler, String asset, String coin) {
+        this.dataHandler = dataHandler;
         this.marketConnector = marketConnector;
         this.asset = asset;
         initBalance = marketConnector.getBalance(coin);
@@ -38,9 +38,10 @@ public class Strategy {
 
     public void checkOut() {
         if (isOpenPosition) {
-            if (checkSaleConditions().equals(sellType.SELL_TAKE_PROFIT) || checkSaleConditions().equals(sellType.SELL_BY_STOP)) {
+            SellType sellType = checkSaleConditions();
+            if (sellType.equals(SellType.SELL_TAKE_PROFIT) || sellType.equals(SellType.SELL_BY_STOP)) {
                 isOpenPosition = false;
-                closePosition(asset);
+                closePosition(asset, sellType);
             }
         } else {
             if (checkBuyConditions()) {
@@ -59,32 +60,36 @@ public class Strategy {
         return marketConnector.getCurrentPrice(asset);
     }
 
-    public String getQuantity(String asset) {
-        return String.format(Locale.US,"%.3f", (tradingBalance / getCurrentPrice(asset)));
+    private String getQuantity(String asset) {
+        return String.format(Locale.US,"%.3f", (tradeBalance / getCurrentPrice(asset)));
     }
 
-    public void closePosition(String asset) {
-        marketConnector.closePosition(asset, getQuantity(asset));
+    private void closePosition(String asset, SellType sellType) {
+        double closePrice = marketConnector.closePosition(asset, getQuantity(asset));
         balance = marketConnector.getBalance(coin);
-        tradingBalance += balance - initBalance;
-        logger.info("New trading balance: " + tradingBalance);
+        tradeBalance += balance - initBalance;
+        dataHandler.receiveClosePositionPrice(closePrice, sellType);
+        logger.info("New trade balance: " + tradeBalance);
     }
 
-    public void openPosition(String asset) {
-        marketConnector.openPosition(asset, getQuantity(asset));
+    private void openPosition(String asset) {
+        double openPosition = marketConnector.openPosition(asset, getQuantity(asset));
         targetPrice = getCurrentPrice(asset) * PROFIT_COEFF;
         stopPrice = getCurrentPrice(asset) * STOP_COEFF;
+        dataHandler.openPosition(openPosition, tradeBalance, targetPrice, stopPrice);
+        logger.info("Target: " + targetPrice);
+        logger.info("Stop: " + stopPrice);
     }
 
-    private sellType checkSaleConditions() {
+    private SellType checkSaleConditions() {
         double currentPrice = getCurrentPrice(asset);
         if (currentPrice >= targetPrice) {
-            return sellType.SELL_TAKE_PROFIT;
+            return SellType.SELL_TAKE_PROFIT;
         }
         else if (currentPrice <= stopPrice) {
-            return sellType.SELL_BY_STOP;
+            return SellType.SELL_BY_STOP;
         }
-        else return sellType.NO_SELL;
+        else return SellType.NO_SELL;
     }
 
     private ArrayList<Candle> getCandles(String candlesQuantity) {

@@ -1,13 +1,16 @@
 package bin.trade;
 
-import bin.trade.logic.market.BinanceConnector;
-import bin.trade.logic.market.MarketConnector;
-import bin.trade.logic.tools.Strategy;
+import bin.trade.datahandler.TelegramDataHandler;
+import bin.trade.datahandler.TradeDataHandler;
+import bin.trade.market.BinanceConnector;
+import bin.trade.market.MarketConnector;
+import bin.trade.tools.Strategy;
 
 public class TradingBot {
     private static MarketConnector marketConnector = new BinanceConnector();
     private static String mostActive = marketConnector.getMostActiveToken();
-    private static final Strategy strategy = new Strategy(marketConnector, mostActive, "USDT");
+    private static TradeDataHandler dataHandler = new TelegramDataHandler();
+    private static final Strategy strategy = new Strategy(marketConnector, dataHandler, mostActive, "USDT");
 
     public static void main(String[] args) {
         while (true) {

@@ -1,7 +1,7 @@
-package bin.trade.logic.backtest;
+package bin.trade.backtest;
 
-import bin.trade.logic.market.BinanceConnector;
-import bin.trade.logic.records.Parameters;
+import bin.trade.market.BinanceConnector;
+import bin.trade.records.Parameters;
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.Table;
@@ -14,13 +14,11 @@ public class MainTest {
     public static void main(String[] args) {
         BinanceConnector binanceConnector = new BinanceConnector();
 
-        /*BackTest backTest = new BackTest();
+        BackTest backTest = new BackTest();
         String mostActive = binanceConnector.getMostActiveToken();
-        BackTest.setSymbol(mostActive);
+        BackTest.setSymbol("ETHUSDT");
         TestDataFileWriter.writeRecentData(BackTest.getSymbol(), 90, "1m");
-        test(backTest);*/
-
-        binanceConnector.getOpenOrders();
+        test(backTest);
     }
     private static void test(BackTest backTest) {
         for (int i = 0; i < 1000; i++) {

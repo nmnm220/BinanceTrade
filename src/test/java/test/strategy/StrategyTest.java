@@ -1,13 +1,13 @@
 package test.strategy;
 
-import bin.trade.logic.market.BinanceConnector;
-import bin.trade.logic.market.MarketConnector;
-import bin.trade.logic.tools.Strategy;
+import bin.trade.market.BinanceConnector;
+import bin.trade.market.MarketConnector;
+import bin.trade.tools.Strategy;
 
 public class StrategyTest {
     public static void main(String[] args) {
         MarketConnector marketConnector = new BinanceConnector();
-        Strategy strategy = new Strategy(marketConnector, "XRPUSDT", "USDT");
+        //Strategy strategy = new Strategy(marketConnector, "XRPUSDT", "USDT");
 /*        String qty = strategy.getQuantity("BTCUSDT");
         strategy.openPosition("BTCUSDT");
         try {
@@ -15,6 +15,6 @@ public class StrategyTest {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }*/
-        strategy.closePosition("XRPUSDT");
+        //strategy.closePosition("XRPUSDT");
     }
 }

@@ -58,7 +58,7 @@
                             <goal>copy-dependencies</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${project.build.directory}/TradeBot/lib</outputDirectory>
+                            <outputDirectory>${project.build.directory}/tradebot/lib</outputDirectory>
                             <overWriteReleases>false</overWriteReleases>
                             <overWriteSnapshots>false</overWriteSnapshots>
                             <overWriteIfNewer>true</overWriteIfNewer>
@@ -80,7 +80,7 @@
                             <Class-Path>.</Class-Path>
                         </manifestEntries>
                     </archive>
-                    <finalName>TradeBot/TradeBot</finalName>
+                    <finalName>tradebot/tradebot</finalName>
                 </configuration>
             </plugin>
         </plugins>

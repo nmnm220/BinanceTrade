@@ -1,8 +1,8 @@
-package bin.trade.logic.backtest;
+package bin.trade.backtest;
 
-import bin.trade.logic.tools.PatternDetector;
-import bin.trade.logic.records.Candle;
-import bin.trade.logic.records.Parameters;
+import bin.trade.tools.PatternDetector;
+import bin.trade.records.Candle;
+import bin.trade.records.Parameters;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
