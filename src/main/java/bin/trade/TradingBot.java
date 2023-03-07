@@ -4,6 +4,7 @@ import bin.trade.datahandler.TelegramDataHandler;
 import bin.trade.datahandler.TradeDataHandler;
 import bin.trade.market.BinanceConnector;
 import bin.trade.market.MarketConnector;
+import bin.trade.telegrambot.TradeDataTelegramBot;
 import bin.trade.tools.Strategy;
 
 public class TradingBot {
@@ -11,6 +12,7 @@ public class TradingBot {
     private static String mostActive = marketConnector.getMostActiveToken();
     private static TradeDataHandler dataHandler = new TelegramDataHandler();
     private static final Strategy strategy = new Strategy(marketConnector, dataHandler, mostActive, "USDT");
+    private static final TradeDataTelegramBot telegramBot = new TradeDataTelegramBot();
 
     public static void main(String[] args) {
         while (true) {
