@@ -3,8 +3,8 @@ package bin.trade.datahandler;
 import bin.trade.tools.Strategy;
 
 public interface TradeDataHandler {
-    void openPosition(double openPrice, double tradeBalance, double targetPrice, double stopPrice);
+    void openPosition(double openPrice, double targetPrice, double stopPrice);
 
-    void closePosition(double closePrice, Strategy.SellType sellType);
-
+    void closePosition(double closePrice, double tradeBalance, Strategy.SellType sellType);
+    void receiveOpenOrders(String openOrders);
 }

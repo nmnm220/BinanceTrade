@@ -68,15 +68,16 @@ public class Strategy {
         double closePrice = marketConnector.closePosition(asset, getQuantity(asset));
         balance = marketConnector.getBalance(coin);
         tradeBalance += balance - initBalance;
-        dataHandler.receiveClosePositionPrice(closePrice, sellType);
+        dataHandler.closePosition(closePrice, tradeBalance, sellType);
         logger.info("New trade balance: " + tradeBalance);
     }
 
     private void openPosition(String asset) {
         double openPosition = marketConnector.openPosition(asset, getQuantity(asset));
-        targetPrice = getCurrentPrice(asset) * PROFIT_COEFF;
-        stopPrice = getCurrentPrice(asset) * STOP_COEFF;
-        dataHandler.openPosition(openPosition, tradeBalance, targetPrice, stopPrice);
+        double currentPrice = getCurrentPrice(asset);
+        targetPrice = currentPrice * PROFIT_COEFF;
+        stopPrice = currentPrice * STOP_COEFF;
+        dataHandler.openPosition(openPosition, targetPrice, stopPrice);
         logger.info("Target: " + targetPrice);
         logger.info("Stop: " + stopPrice);
     }

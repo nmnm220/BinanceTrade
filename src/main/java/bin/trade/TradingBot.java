@@ -6,22 +6,46 @@ import bin.trade.market.BinanceConnector;
 import bin.trade.market.MarketConnector;
 import bin.trade.telegrambot.TradeDataTelegramBot;
 import bin.trade.tools.Strategy;
+import org.telegram.telegrambots.meta.TelegramBotsApi;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 public class TradingBot {
     private static MarketConnector marketConnector = new BinanceConnector();
     private static String mostActive = marketConnector.getMostActiveToken();
-    private static TradeDataHandler dataHandler = new TelegramDataHandler();
-    private static final Strategy strategy = new Strategy(marketConnector, dataHandler, mostActive, "USDT");
+    //private static Boolean tradeBotIdle = false;
     private static final TradeDataTelegramBot telegramBot = new TradeDataTelegramBot();
+    private static final TradeDataHandler dataHandler = new TelegramDataHandler(telegramBot);
+    private static final Strategy strategy = new Strategy(marketConnector, dataHandler, mostActive, "USDT");
+    private static Thread tradeBotThread;
 
     public static void main(String[] args) {
-        while (true) {
-            strategy.checkOut();
+        Thread telegramBotThread = new Thread(() -> {
+            TelegramBotsApi telegramBotsApi = null;
             try {
-                Thread.sleep(35000);
-            } catch (InterruptedException e) {
+                telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
+                telegramBotsApi.registerBot(telegramBot);
+            } catch (TelegramApiException e) {
                 throw new RuntimeException(e);
             }
-        }
+        },"TelegramBot Thread");
+        telegramBotThread.start();
+    }
+
+    public static void tradeBotStart() {
+        tradeBotThread = new Thread(() -> {
+            while (true) {
+                strategy.checkOut();
+                try {
+                    Thread.sleep(35000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }, "TradeBot Thread");
+        tradeBotThread.start();
+    }
+    public static void tradeBotStop() {
+        tradeBotThread.interrupt();
     }
 }
