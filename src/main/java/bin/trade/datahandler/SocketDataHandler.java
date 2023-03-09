@@ -15,6 +15,7 @@ public class SocketDataHandler implements TradeDataHandler {
                 "\nOpen price: " + openPrice +
                 "\nTarget price: " + targetPrice +
                 "\nStop price:" + stopPrice);
+        socketClient.sendData(text);
     }
 
     @Override
@@ -28,9 +29,11 @@ public class SocketDataHandler implements TradeDataHandler {
                 "\nClose price: " + closePrice +
                 "\nNew trade balance: " + tradeBalance +
                 "\n" + sellTypeText);
+        socketClient.sendData(text);
     }
     public void receiveOpenOrders(String openOrders) {
         String text = openOrders;
+        socketClient.sendData(text);
     }
 
     public void getMostActiveAsset(String asset) {
@@ -39,12 +42,5 @@ public class SocketDataHandler implements TradeDataHandler {
 
     public void init() {
         String text = "Trade bot start...";
-    }
-
-    public boolean startTradeBot() {
-        return true;
-    }
-    public boolean stopTradeBot() {
-        return false;
     }
 }
