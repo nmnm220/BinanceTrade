@@ -1,13 +1,12 @@
 package bin.trade.datahandler;
 
-import bin.trade.telegrambot.TradeDataTelegramBot;
 import bin.trade.tools.Strategy;
+import socket.client.SocketClient;
 
-public class TelegramDataHandler implements TradeDataHandler {
-    TradeDataTelegramBot telegramBot;
-
-    public TelegramDataHandler(TradeDataTelegramBot telegramBot) {
-        this.telegramBot = telegramBot;
+public class SocketDataHandler implements TradeDataHandler {
+    private SocketClient socketClient;
+    public SocketDataHandler(String serverName, int port) {
+        socketClient = new SocketClient(serverName, port);
     }
 
     @Override
@@ -16,7 +15,6 @@ public class TelegramDataHandler implements TradeDataHandler {
                 "\nOpen price: " + openPrice +
                 "\nTarget price: " + targetPrice +
                 "\nStop price:" + stopPrice);
-        telegramBot.sendTradeInfo(text);
     }
 
     @Override
@@ -30,21 +28,17 @@ public class TelegramDataHandler implements TradeDataHandler {
                 "\nClose price: " + closePrice +
                 "\nNew trade balance: " + tradeBalance +
                 "\n" + sellTypeText);
-        telegramBot.sendTradeInfo(text);
     }
     public void receiveOpenOrders(String openOrders) {
         String text = openOrders;
-        telegramBot.sendTradeInfo(text);
     }
 
     public void getMostActiveAsset(String asset) {
         String text = "Most active asset:" + asset;
-        telegramBot.sendTradeInfo(text);
     }
 
     public void init() {
         String text = "Trade bot start...";
-        telegramBot.sendTradeInfo(text);
     }
 
     public boolean startTradeBot() {

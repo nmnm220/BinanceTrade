@@ -12,5 +12,8 @@
         <module name="BinanceTrade" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="TradeInfoTelegramBot" target="19" />
+    </bytecodeTargetLevel>
   </component>
 </project>
