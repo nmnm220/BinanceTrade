@@ -31,6 +31,9 @@ public class SocketDataHandler implements TradeDataHandler {
                 "\n" + sellTypeText);
         socketClient.sendData(text);
     }
+    public String getData() {
+        return socketClient.getData();
+    }
     public void receiveOpenOrders(String openOrders) {
         String text = openOrders;
         socketClient.sendData(text);
@@ -38,9 +41,11 @@ public class SocketDataHandler implements TradeDataHandler {
 
     public void getMostActiveAsset(String asset) {
         String text = "Most active asset:" + asset;
+        socketClient.sendData(text);
     }
 
     public void init() {
         String text = "Trade bot start...";
+        socketClient.sendData(text);
     }
 }

@@ -5,6 +5,7 @@ import bin.trade.datahandler.TradeDataHandler;
 import bin.trade.market.BinanceConnector;
 import bin.trade.market.MarketConnector;
 import bin.trade.tools.Strategy;
+import socket.client.SocketClient;
 
 public class TradingBot {
     private static final String serverName = "127.0.0.1";
@@ -16,12 +17,9 @@ public class TradingBot {
     private static Thread tradeBotThread;
 
     public static void main(String[] args) {
-
-    }
-
-    public static void tradeBotStart() {
         tradeBotThread = new Thread(() -> {
             while (true) {
+                dataHandler.init();
                 strategy.checkOut();
                 try {
                     Thread.sleep(35000);
@@ -30,9 +28,14 @@ public class TradingBot {
                 }
             }
         }, "TradeBot Thread");
+        Thread socketClientThread = new Thread(() -> {
+            while (true) {
+                String text = dataHandler.getData();
+                if (text != null)
+                    System.out.println(dataHandler.getData());
+            }
+        });
         tradeBotThread.start();
-    }
-    public static void tradeBotStop() {
-        tradeBotThread.interrupt();
+        socketClientThread.start();
     }
 }

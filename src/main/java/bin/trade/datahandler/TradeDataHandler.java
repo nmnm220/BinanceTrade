@@ -7,4 +7,6 @@ public interface TradeDataHandler {
 
     void closePosition(double closePrice, double tradeBalance, Strategy.SellType sellType);
     void receiveOpenOrders(String openOrders);
+    String getData();
+    void init();
 }
