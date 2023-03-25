@@ -63,9 +63,7 @@ public class Strategy {
     }
 
     private double getCurrentPrice(String asset) {
-        Double price = marketConnector.getCurrentPrice(asset);
-        dataHandler.sendCurrentPrice(String.valueOf(price));
-        return price;
+        return marketConnector.getCurrentPrice(asset);
     }
     //returns asset quantity that can be bought for current trade balance
     private String getQuantity(String asset) {

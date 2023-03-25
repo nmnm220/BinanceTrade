@@ -1,24 +1,17 @@
 package bin.trade.datahandler;
 
 import bin.trade.tools.Strategy;
-import socket.client.SocketClient;
+import socket.SocketClient;
 
 public class SocketDataHandler implements TradeDataHandler {
-    private SocketClient socketClient;
-    private String serverName;
-    private int port;
+    private final SocketClient socketClient;
+
     public SocketDataHandler(String serverName, int port) {
-        this.serverName = serverName;
-        this.port = port;
-        newConnection(this.serverName, this.port);
-    }
-    private void newConnection(String serverName, int port) {
         socketClient = new SocketClient(serverName, port);
     }
 
     @Override
     public void openPosition(double openPrice, double targetPrice, double stopPrice) {
-        newConnection(serverName, port);
         String text = ("Opened postition" +
                 "\nOpen price: " + openPrice +
                 "\nTarget price: " + targetPrice +
@@ -28,7 +21,6 @@ public class SocketDataHandler implements TradeDataHandler {
 
     @Override
     public void closePosition(double closePrice, double tradeBalance, Strategy.SellType sellType) {
-        newConnection(serverName, port);
         String sellTypeText;
         if (sellType.equals(Strategy.SellType.SELL_TAKE_PROFIT))
             sellTypeText = "Sell by takeprofit";
@@ -47,8 +39,8 @@ public class SocketDataHandler implements TradeDataHandler {
         socketClient.sendData(openOrders);
     }
 
-    public void getMostActiveAsset(String asset) {
-        String text = "Most active asset:" + asset;
+    public void getMostActiveAsset(String asset, String percentChange) {
+        String text = "Most active asset: " + asset + ", 24H percent change: " + percentChange;
         socketClient.sendData(text);
     }
 

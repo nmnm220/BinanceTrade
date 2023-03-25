@@ -15,7 +15,7 @@ public class MainTest {
         BinanceConnector binanceConnector = new BinanceConnector();
 
         BackTest backTest = new BackTest();
-        String mostActive = binanceConnector.getMostActiveToken();
+        String mostActive = binanceConnector.getMostActiveToken()[0];
         BackTest.setSymbol("ETHUSDT");
         TestDataFileWriter.writeRecentData(BackTest.getSymbol(), 90, "1m");
         test(backTest);

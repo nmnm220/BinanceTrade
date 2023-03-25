@@ -1,4 +1,4 @@
-package socket.client;
+package socket;
 
 import java.io.*;
 import java.net.Socket;
@@ -35,7 +35,7 @@ public class SocketClient {
         try {
             if (inputStream != null)
                 return inputBuffer.readLine();
-            else return "no data";
+            else return null;
         } catch (IOException e) {
             System.out.println(e);
             return e.getMessage();

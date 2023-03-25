@@ -24,7 +24,7 @@ public class BinanceConnector implements MarketConnector {
     private final SpotClient spotClient = new SpotClientImpl(API_KEY, SECRET_KEY, URL);
     private final Logger logger = LoggerFactory.getLogger(BinanceConnector.class);
 
-    public String getMostActiveToken() {
+    public String[] getMostActiveToken() {
         LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
         parameters.put("type", "FULL");
         try {
@@ -37,18 +37,18 @@ public class BinanceConnector implements MarketConnector {
             double maxChange = workTickers.doubleColumn("priceChangePercent").get(0);
             String maxTickerName = workTickers.stringColumn("symbol").get(0);
             logger.info("Got most active token: " + maxTickerName + ", Percent price change: " + maxChange);
-            return maxTickerName;
+            return new String[]{maxTickerName, String.valueOf(maxChange)};
         } catch (BinanceClientException e) {
             logger.error(e.getMessage());
             return null;
         }
     }
 
-    public ArrayList<Candle> getLastCandles(String coinsPair, String time, String lookback) {
+    public ArrayList<Candle> getLastCandles(String coinsPair, String time, String lookBack) {
         LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
         parameters.put("symbol", coinsPair);
         parameters.put("interval", time);
-        parameters.put("limit", lookback);
+        parameters.put("limit", lookBack);
         try {
             String klinesData = spotClient.createMarket().klines(parameters);
             JsonReader jsonReader = new JsonReader();
@@ -56,7 +56,7 @@ public class BinanceConnector implements MarketConnector {
             for (int i = 0; i < COLUMN_NAMES_KLINES.size(); i++) {
                 candlesData.column(i).setName(COLUMN_NAMES_KLINES.get(i));
             }
-            ArrayList<Candle> candles = new ArrayList<>(Integer.parseInt(lookback));
+            ArrayList<Candle> candles = new ArrayList<>(Integer.parseInt(lookBack));
             for (Row row : candlesData) {
                 double openPrice = row.getNumber("Open price");
                 double highPrice = row.getNumber("High price");
@@ -64,7 +64,7 @@ public class BinanceConnector implements MarketConnector {
                 double closePrice = row.getNumber("Close price");
                 candles.add(new Candle(openPrice, highPrice, lowPrice, closePrice));
             }
-            logger.debug("Got last " + lookback + " candles");
+            logger.debug("Got last " + lookBack + " candles");
             return candles;
         } catch (BinanceClientException e) {
             logger.error("Error: " + e.getMessage());

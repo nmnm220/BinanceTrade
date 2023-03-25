@@ -5,40 +5,52 @@ import bin.trade.datahandler.TradeDataHandler;
 import bin.trade.market.BinanceConnector;
 import bin.trade.market.MarketConnector;
 import bin.trade.tools.Strategy;
-import socket.client.SocketClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TradingBot {
     private static final String serverName = "127.0.0.1";
+    private static final int port = 6666;
+    private static int checkOutDelay = 35000;
     private static final MarketConnector marketConnector = new BinanceConnector();
-    private static final String mostActive = marketConnector.getMostActiveToken();
-    private static final TradeDataHandler dataHandler = new SocketDataHandler(serverName, 6666);
-    private static final Strategy strategy = new Strategy(marketConnector, dataHandler, mostActive, "USDT");
-    private static Thread tradeBotThread;
+    private static final String[] mostActiveToken = marketConnector.getMostActiveToken();
+    private static final Logger logger = LoggerFactory.getLogger(TradingBot.class);
+    private static TradeDataHandler dataHandler;
+    private static Strategy strategy;
 
     public static void main(String[] args) {
-        tradeBotThread = new Thread(() -> {
+        try {
+            dataHandler = new SocketDataHandler(serverName, port);
+            dataHandler.init();
+            strategy = new Strategy(marketConnector, dataHandler, mostActiveToken[0], "USDT");
+            dataHandler.getMostActiveAsset(mostActiveToken[0], mostActiveToken[1]);
+        } catch (Exception e) {
+            logger.error("Error " + e.getMessage());
+            throw new RuntimeException();
+        }
+        Thread tradeBotThread = new Thread(() -> {
             while (true) {
                 strategy.checkOut();
                 try {
-                    Thread.sleep(35000);
+                    Thread.sleep(checkOutDelay);
                 } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
+                    logger.error("Error " + e.getMessage());
+                    throw new RuntimeException();
                 }
             }
         }, "TradeBot Thread");
         Thread socketClientThread = new Thread(() -> {
-            dataHandler.init();
-            dataHandler.getMostActiveAsset(mostActive);
             String text = "";
             while (true) {
                 try {
                     if ((text = dataHandler.getData()) != null)
-                        System.out.println(text);
+                        logger.info("Got command from server" + text);
                 } catch (Exception e) {
-                    System.out.println(e.getMessage());
+                    logger.error("Error " + e.getMessage());
+                    throw new RuntimeException();
                 }
             }
-        });
+        }, "Socket Thread");
         tradeBotThread.start();
         socketClientThread.start();
     }

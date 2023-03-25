@@ -11,6 +11,6 @@ public interface MarketConnector {
     double getCurrentPrice(String asset);
     double getBalance(String coin);
     void getOpenOrders();
-    String getMostActiveToken();
+    String[] getMostActiveToken();
 
 }
