@@ -5,12 +5,20 @@ import socket.client.SocketClient;
 
 public class SocketDataHandler implements TradeDataHandler {
     private SocketClient socketClient;
+    private String serverName;
+    private int port;
     public SocketDataHandler(String serverName, int port) {
+        this.serverName = serverName;
+        this.port = port;
+        newConnection(this.serverName, this.port);
+    }
+    private void newConnection(String serverName, int port) {
         socketClient = new SocketClient(serverName, port);
     }
 
     @Override
     public void openPosition(double openPrice, double targetPrice, double stopPrice) {
+        newConnection(serverName, port);
         String text = ("Opened postition" +
                 "\nOpen price: " + openPrice +
                 "\nTarget price: " + targetPrice +
@@ -20,6 +28,7 @@ public class SocketDataHandler implements TradeDataHandler {
 
     @Override
     public void closePosition(double closePrice, double tradeBalance, Strategy.SellType sellType) {
+        newConnection(serverName, port);
         String sellTypeText;
         if (sellType.equals(Strategy.SellType.SELL_TAKE_PROFIT))
             sellTypeText = "Sell by takeprofit";
@@ -35,13 +44,17 @@ public class SocketDataHandler implements TradeDataHandler {
         return socketClient.getData();
     }
     public void receiveOpenOrders(String openOrders) {
-        String text = openOrders;
-        socketClient.sendData(text);
+        socketClient.sendData(openOrders);
     }
 
     public void getMostActiveAsset(String asset) {
         String text = "Most active asset:" + asset;
         socketClient.sendData(text);
+    }
+
+    @Override
+    public void sendCurrentPrice(String price) {
+        socketClient.sendData("Current price: " + price);
     }
 
     public void init() {

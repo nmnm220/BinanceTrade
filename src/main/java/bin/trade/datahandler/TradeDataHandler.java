@@ -9,4 +9,6 @@ public interface TradeDataHandler {
     void receiveOpenOrders(String openOrders);
     String getData();
     void init();
+    void getMostActiveAsset(String asset);
+    void sendCurrentPrice(String price);
 }

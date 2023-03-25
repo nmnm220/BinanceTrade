@@ -20,6 +20,11 @@ public class Strategy {
     //private final List<Candle> candles = new LinkedList<>();
     //private double quantity;
     private String asset;
+
+    public void setTradeBalance(double tradeBalance) {
+        this.tradeBalance = tradeBalance;
+    }
+
     private double tradeBalance = 20;
     private final double initBalance;
     private double PROFIT_COEFF = 1.02;
@@ -35,8 +40,9 @@ public class Strategy {
         this.asset = asset;
         initBalance = marketConnector.getBalance(coin);
     }
-
+    //check out for sale conditions
     public void checkOut() {
+        getCurrentPrice(asset);
         if (isOpenPosition) {
             SellType sellType = checkSaleConditions();
             if (sellType.equals(SellType.SELL_TAKE_PROFIT) || sellType.equals(SellType.SELL_BY_STOP)) {
@@ -57,9 +63,11 @@ public class Strategy {
     }
 
     private double getCurrentPrice(String asset) {
-        return marketConnector.getCurrentPrice(asset);
+        Double price = marketConnector.getCurrentPrice(asset);
+        dataHandler.sendCurrentPrice(String.valueOf(price));
+        return price;
     }
-
+    //returns asset quantity that can be bought for current trade balance
     private String getQuantity(String asset) {
         return String.format(Locale.US,"%.3f", (tradeBalance / getCurrentPrice(asset)));
     }

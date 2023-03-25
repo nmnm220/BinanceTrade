@@ -9,9 +9,8 @@ import socket.client.SocketClient;
 
 public class TradingBot {
     private static final String serverName = "127.0.0.1";
-    private static MarketConnector marketConnector = new BinanceConnector();
-    private static String mostActive = marketConnector.getMostActiveToken();
-    //private static Boolean tradeBotIdle = false;
+    private static final MarketConnector marketConnector = new BinanceConnector();
+    private static final String mostActive = marketConnector.getMostActiveToken();
     private static final TradeDataHandler dataHandler = new SocketDataHandler(serverName, 6666);
     private static final Strategy strategy = new Strategy(marketConnector, dataHandler, mostActive, "USDT");
     private static Thread tradeBotThread;
@@ -19,7 +18,6 @@ public class TradingBot {
     public static void main(String[] args) {
         tradeBotThread = new Thread(() -> {
             while (true) {
-                dataHandler.init();
                 strategy.checkOut();
                 try {
                     Thread.sleep(35000);
@@ -29,10 +27,16 @@ public class TradingBot {
             }
         }, "TradeBot Thread");
         Thread socketClientThread = new Thread(() -> {
+            dataHandler.init();
+            dataHandler.getMostActiveAsset(mostActive);
+            String text = "";
             while (true) {
-                String text = dataHandler.getData();
-                if (text != null)
-                    System.out.println(dataHandler.getData());
+                try {
+                    if ((text = dataHandler.getData()) != null)
+                        System.out.println(text);
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                }
             }
         });
         tradeBotThread.start();
