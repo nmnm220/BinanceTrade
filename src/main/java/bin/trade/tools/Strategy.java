@@ -11,28 +11,28 @@ import java.util.Locale;
 
 public class Strategy {
     private final MarketConnector marketConnector;
-    public enum SellType {SELL_BY_STOP, SELL_TAKE_PROFIT, NO_SELL}
-    private double balance;
-    private double targetPrice;
-    private double stopPrice;
+    public enum SellType {SELL_BY_STOP, SELL_TAKE_PROFIT, NO_SELL, MANUAL}
+    private double balance; //current balance
+    private double targetPrice; //calculated target price, depends on profit coeff
+    private double stopPrice; //calculated stop price, depends on profit coeff
     private boolean isOpenPosition = false;
     private final PatternDetector patternDetector = new PatternDetector();
     //private final List<Candle> candles = new LinkedList<>();
     //private double quantity;
-    private String asset;
+    private String asset; //trading asset
 
     public void setTradeBalance(double tradeBalance) {
         this.tradeBalance = tradeBalance;
     }
 
-    private double tradeBalance = 20;
-    private final double initBalance;
-    private double PROFIT_COEFF = 1.02;
-    private double STOP_COEFF = 0.55;
-    private String coin = "USDT";
-    private String time = "1m";
+    private double tradeBalance = 20; //trade balance should be set by user
+    private final double initBalance; //initial balance for calculations
+    private double PROFIT_COEFF = 1.02; //coefficient for take profit sale
+    private double STOP_COEFF = 0.55; //coefficient for take stop loss sale
+    private String coin = "USDT"; //default "stable" currency
+    private String time = "1m"; //candles interval
     private final Logger logger = LoggerFactory.getLogger(Strategy.class);
-    private final TradeDataHandler dataHandler;
+    private final TradeDataHandler dataHandler; //data output
 
     public Strategy(MarketConnector marketConnector, TradeDataHandler dataHandler, String asset, String coin) {
         this.dataHandler = dataHandler;
@@ -67,7 +67,7 @@ public class Strategy {
     }
     //returns asset quantity that can be bought for current trade balance
     private String getQuantity(String asset) {
-        return String.format(Locale.US,"%.3f", (tradeBalance / getCurrentPrice(asset)));
+        return String.format(Locale.US,"%.2f", (tradeBalance / getCurrentPrice(asset)));
     }
 
     private void closePosition(String asset, SellType sellType) {
@@ -116,5 +116,14 @@ public class Strategy {
             else resultCondition = resultCondition && condition;
         }
         return resultCondition;
+    }
+    public void manualSell() {
+        closePosition(asset, SellType.MANUAL);
+    }
+    public void manualBuy() {
+        openPosition(asset);
+    }
+    public void printCurPrice() {
+
     }
 }

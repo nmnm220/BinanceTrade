@@ -11,4 +11,5 @@ public interface TradeDataHandler {
     void init();
     void getMostActiveAsset(String asset, String percentChange);
     void sendCurrentPrice(String price);
+    void sendData(String text);
 }

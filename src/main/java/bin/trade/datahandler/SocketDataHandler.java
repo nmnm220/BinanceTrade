@@ -2,7 +2,7 @@ package bin.trade.datahandler;
 
 import bin.trade.tools.Strategy;
 import socket.SocketClient;
-
+//Class to get and send data from telegram bot
 public class SocketDataHandler implements TradeDataHandler {
     private final SocketClient socketClient;
 
@@ -15,7 +15,7 @@ public class SocketDataHandler implements TradeDataHandler {
         String text = ("Opened postition" +
                 "\nOpen price: " + openPrice +
                 "\nTarget price: " + targetPrice +
-                "\nStop price:" + stopPrice);
+                "\nStop price: " + stopPrice);
         socketClient.sendData(text);
     }
 
@@ -43,14 +43,17 @@ public class SocketDataHandler implements TradeDataHandler {
         String text = "Most active asset: " + asset + ", 24H percent change: " + percentChange;
         socketClient.sendData(text);
     }
-
     @Override
     public void sendCurrentPrice(String price) {
-        socketClient.sendData("Current price: " + price);
+        socketClient.sendData("Current asset price: " + price);
     }
 
-    public void init() {
+    public void init() { //bot start signal
         String text = "Trade bot start...";
         socketClient.sendData(text);
     }
+    @Override
+    public void sendData(String text) {
+        socketClient.sendData(text);
+    } //utility method to send data
 }
