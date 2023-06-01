@@ -35,7 +35,7 @@ public class TradingBot {
             logger.error("Error " + e.getMessage());
             throw new RuntimeException();
         }
-        //Thread checks for sale condition with set up timeout to not get a ban
+        //Thread to check for sale condition with set up timeout to not get a ban
         Thread tradeBotThread = new Thread(() -> {
             while (true) {
                 strategy.checkOut();
@@ -47,14 +47,14 @@ public class TradingBot {
                 }
             }
         }, "TradeBot Thread");
-        //Thread listens socket
+        //Listening socket
         Thread socketClientThread = new Thread(() -> {
             String text = "";
             while (true) {
                 try {
                     if ((text = dataHandler.getData()) != null) {
                         logger.info("Got command from bot: " + text);
-                        dataHandler.sendData(telegramBotCommandHandler.command(text)); //returns answer from commandHandler
+                        dataHandler.sendData(telegramBotCommandHandler.command(text)); //answer from commandHandler
                     }
                 } catch (Exception e) {
                     logger.error("Error " + e.getMessage());

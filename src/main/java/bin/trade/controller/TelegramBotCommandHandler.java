@@ -19,11 +19,17 @@ public class TelegramBotCommandHandler {
             }
             case("/sell") -> {
                 strategy.manualSell();
-                return "sold";
+                return "";
             }
             case("/buy") -> {
                 strategy.manualBuy();
-                return "bought";
+                return "";
+            }
+            case ("/price") -> {
+                return "Current price: " + strategy.printCurPrice();
+            }
+            case ("/balance") -> {
+                return "Balance: " + strategy.printBalance() + " " + strategy.getCoin();
             }
         }
         return "Unknown command";

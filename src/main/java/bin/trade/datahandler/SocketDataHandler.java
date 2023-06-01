@@ -24,6 +24,8 @@ public class SocketDataHandler implements TradeDataHandler {
         String sellTypeText;
         if (sellType.equals(Strategy.SellType.SELL_TAKE_PROFIT))
             sellTypeText = "Sell by takeprofit";
+        else if (sellType.equals(Strategy.SellType.MANUAL))
+            sellTypeText = "Sell by manual command";
         else
             sellTypeText = "Sell by stoploss";
         String text = ("Closed postition" +

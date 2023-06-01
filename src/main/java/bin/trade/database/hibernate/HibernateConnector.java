@@ -21,6 +21,7 @@ public class HibernateConnector implements DataBaseConnector {
     public void addNewTrade(Trade trade) {
         try (Session session = sessionFactory.getCurrentSession()) {
             session.beginTransaction();
+            List<Asset> assets = session.createQuery("from Asset", Asset.class).getResultList();
             session.persist(trade);
             session.getTransaction().commit();
         }
@@ -30,7 +31,7 @@ public class HibernateConnector implements DataBaseConnector {
     public String getAllTrades() {
         try (Session session = sessionFactory.getCurrentSession()) {
             session.beginTransaction();
-            List<Trade> trades = session.createQuery("FROM Trade").getResultList();
+            List<Trade> trades = session.createQuery("from Trade", Trade.class).getResultList();
             StringBuilder stringTrades = new StringBuilder();
             for (Trade trade : trades) {
                 stringTrades.append("\nId: ");

@@ -67,7 +67,7 @@ public class Strategy {
     }
     //returns asset quantity that can be bought for current trade balance
     private String getQuantity(String asset) {
-        return String.format(Locale.US,"%.2f", (tradeBalance / getCurrentPrice(asset)));
+        return String.format(Locale.US,"%.1f", (tradeBalance / getCurrentPrice(asset)));
     }
 
     private void closePosition(String asset, SellType sellType) {
@@ -120,10 +120,12 @@ public class Strategy {
     public void manualSell() {
         closePosition(asset, SellType.MANUAL);
     }
-    public void manualBuy() {
-        openPosition(asset);
+    public void manualBuy() { openPosition(asset); }
+    public String printCurPrice() {
+        return String.valueOf(getCurrentPrice(asset));
     }
-    public void printCurPrice() {
-
+    public String printBalance() {
+        return String.valueOf(marketConnector.getBalance(coin));
     }
+    public String getCoin() { return coin;}
 }
